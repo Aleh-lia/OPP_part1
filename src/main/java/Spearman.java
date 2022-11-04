@@ -1,0 +1,11 @@
+public class Spearman extends BaseHero{
+    public Spearman() {
+        super(String.format("Spearman#%d", ++Spearman.number),
+                10, 4, 5, 0, new int[]{1, 3}, 4);
+    }
+
+    @Override
+    public String getName() {
+        return "Spe " + name;
+    }
+}
