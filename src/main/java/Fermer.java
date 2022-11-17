@@ -1,26 +1,18 @@
 import java.security.SecureRandom;
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class Fermer extends BaseHero {
 
     private boolean delivery;
 
-    public Fermer() {
+    public Fermer(List<BaseHero> side, int x, int y) {
         super(String.format("Fermer #%d", ++Fermer.number),
                 1, 1, 1, 0, new int[]{1}, 3);
         delivery = true;
+        position = new PlayingField(x, y);
     }
 
-
-    @Override
-    public String getName() {
-        return "Fer " + name;
-
-    }
 
     @Override
     public String getInfo() {
