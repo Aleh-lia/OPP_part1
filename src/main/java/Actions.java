@@ -1,14 +1,13 @@
 import java.util.List;
 
 public interface Actions {
-
-    String getName();
-
+    
+    void strike(BaseHero hero);
+    void getDamaged(float damagePower);
+    boolean changePosition();
+    String indicateStatus();
     String getInfo();
-
     void step(List<BaseHero> side);
 
     String returnCondition();
-    void getDamaged(float damagePower);
-
 }
