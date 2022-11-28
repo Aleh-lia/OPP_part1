@@ -15,6 +15,8 @@ public class Lesson1 {
         System.out.print(AnsiColors.ANSI_BLACK + AnsiColors.ANSI_PURPLE_BACKGROUND + "Press Enter to begin." + AnsiColors.ANSI_RESET);
         in.nextLine();
 
+
+
         while (true) {
             if (step == 1 ){
                 System.out.print(AnsiColors.ANSI_RED + "First step" + AnsiColors.ANSI_RESET);
@@ -81,7 +83,7 @@ public class Lesson1 {
 
     }
     private static void tabSetter(int cnt, int max){
-        int dif = max - cnt + 2;
+        int dif = max - cnt + 5;
         if (dif>0) System.out.printf("%"+ dif +"s", ":\t"); else System.out.print(":\t");
     }
     private static String formatDiv(String str) {
@@ -100,10 +102,10 @@ public class Lesson1 {
                 String out = "| ";
                 for (int cnt = 0; cnt < darkSide.size(); cnt++) {
                     if (darkSide.get(cnt).getPosition().x == x && darkSide.get(cnt).getPosition().y == y) {
-                out = "|" + ( (darkSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_CYAN:AnsiColors.ANSI_BLUE) +
+                out = "|" + ( (darkSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_BLUE) +
                         darkSide.get(cnt).getName().charAt(0) + AnsiColors.ANSI_RESET);
             } else if (whiteSide.get(cnt).getPosition().x == x && whiteSide.get(cnt).getPosition().y == y) {
-                out = "|" + ( (darkSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_CYAN:AnsiColors.ANSI_GREEN) +
+                out = "|" + ( (whiteSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_GREEN) +
                         whiteSide.get(cnt).getName().charAt(0) + AnsiColors.ANSI_RESET);
             }
         }
@@ -111,12 +113,12 @@ public class Lesson1 {
     }
     private static void view() {
         darkSide.forEach((v) -> l[0] = Math.max(l[0], v.returnCondition().length()));
-        for (int i = 0; i < l[0]*2; i++) System.out.print("_");
+        for (int i = 0; i < l[0]*2.5; i++) System.out.print("_");
         System.out.println("");
         System.out.print(top10 + "    ");
-        System.out.print("Blue side");
+        System.out.print(AnsiColors.ANSI_BLUE + "\tBlue side"  + AnsiColors.ANSI_RESET);
         for (int i = 0; i < l[0]-9; i++) System.out.print(" ");
-        System.out.println(":\tGreen side");
+        System.out.println(AnsiColors.ANSI_GREEN + ":\t\tGreen side" + AnsiColors.ANSI_RESET);
         for (int i = 1; i < 11; i++) {
             System.out.print(getChar(1, i));
         }

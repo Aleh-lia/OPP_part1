@@ -3,9 +3,9 @@ import java.util.List;
 public abstract class BaseHero implements Actions {
     protected static int number;
     private String name;
-    private int attack;
-    private int defence;
-    private int shot;
+    protected int attack;
+    protected int defence;
+    protected int shot;
     protected  PlayingField damage;
     protected float health;
     protected int maxHealth;
@@ -18,21 +18,25 @@ public abstract class BaseHero implements Actions {
         number = 0;
     }
 
-
+    protected float getDist(PlayingField dist){
+        float dx = position.x - dist.x;
+        float dy = position.y - dist.y;
+        return (float) Math.sqrt(dx*dx + dy*dy);
+    }
 
     protected void setBand(List<BaseHero> band){
         this.band = band;
     }
 
-    public  PlayingField getPosition() {
+    protected PlayingField getPosition() {
         return position;
     }
 
     public BaseHero(String name, int health) {
         this.name = name;
         this.health = this.maxHealth = health;
-        this.health--;
         status = "stand";
+        number++;
     }
 
     public BaseHero(String name, int health, int attack, int protection,
@@ -46,52 +50,29 @@ public abstract class BaseHero implements Actions {
     }
 
     @Override
-    public void step(List<BaseHero> side) {}
-
-    @Override
-    public String getInfo() {
-        return String.format("%s: %s  hlth: %d  attk: %d  protect: %d  shot: %d  dmg: %d-%d  speed: %d",
-                this.getClass().getSimpleName(), name, health, attack, defence, shot, damage.x, damage.y, speed);
+    public void step(List<BaseHero> side) {
+        if (getStatus().equals("Die")) return;
     }
+
+
     public String getName() {
         return name;
     }
-    public int getAttack() {
-        return attack;
-    }
-    public int getDefence() {
-        return defence;
-    }
-    public float getHealth() {
-        return health;
-    }
-    public int getShot() {
-        return shot;
-    }
-    public int getSpeed() {
-        return speed;
-    }
-    public String getStatus() {
+    protected String getStatus() {
         return status;
     }
+    protected void getDamaged(float damagePower) {
+        health = -damagePower;
+        if (health <= 0) {
+            status = "Die";
+            health = 0;
 
-    public static int getNumber(){return number;}
-
-    @Override
-    public void strike(BaseHero hero) {}
-
-    @Override
-    public void getDamaged(float damagePower) {health -= damagePower;}
-
-    @Override
-    public boolean changePosition() {return false;}
-
-    @Override
-    public String indicateStatus() {return null;}
+        }
+    }
     @Override
     public String returnCondition() {
         return name +
-                " H:" + Math.round(health) +
+                " H:" + Math.ceil(health) +
                 " D:" + defence +
                 " A:" + attack +
                 " Dmg:" + (int)(Math.abs((damage.x+damage.y)/2)) +
@@ -99,11 +80,8 @@ public abstract class BaseHero implements Actions {
                 status;
     }
 
-    public int setShot(int shot) {
-        if (shot < 1) return -1;
-        if (shot > 32) return -2;
-        this.shot = shot;
-        return shot;
-    }
 
+    public float getSpeed() {
+        return speed;
+    }
 }
