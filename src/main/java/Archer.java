@@ -2,11 +2,14 @@ import java.util.List;
 
 public class Archer extends BaseHero {
     
-    public Archer(List<BaseHero> band, int x, int y) {
-        super("Archer ", 20, 6, 3, 12, new int[]{2, 5}, 4);
+    public Archer(List<BaseHero> band, int x, int y, int cnt) {
+        super("Archer ", 20, 6, 3, 12, new int[]{2, 6}, 4);
+        count = cnt;
         position = new  PlayingField(x, y);
         super.setBand(band);
     }
+
+
 
     @Override
     public void step(List<BaseHero> side) {
@@ -24,12 +27,15 @@ public class Archer extends BaseHero {
         }
 
         if (shot > 0 & flag){
+            setStatus("shot: " + (index + 1));
             shot--;
-            side.get(index).getDamaged(damage.x+damage.y/2);
+            side.get(index).getDamaged((damage.x+damage.y) * count / 2);
             for (BaseHero p:band){
                 if (p.getName().equals("Fermer")) shot++;
             }
+            return;
         }
+        setStatus("stand");
 
 
     }

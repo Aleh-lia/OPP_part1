@@ -2,8 +2,9 @@ import java.util.List;
 
 public class Outlaw extends BaseHero {
     
-    public Outlaw(List<BaseHero> side, int x, int y) {
+    public Outlaw(List<BaseHero> band, int x, int y, int cnt) {
         super("Outlaw ", 20, 8, 3, 0, new int[]{2, 4}, 6);
+        count = cnt;
         position = new  PlayingField(x, y);
         super.setBand(band);
     }
@@ -27,21 +28,40 @@ public class Outlaw extends BaseHero {
         if (dist < 2 & flag){
             int dA = attack - side.get(index).defence;
             float dDam = (dA < 0) ? damage.x : ((damage.x + dA) <= damage.y ? (damage.x + dA) : damage.y);
-            side.get(index).getDamaged(dDam);
+            side.get(index).getDamaged(dDam + count);
         } else {
-            if (Math.abs(position.y - side.get(index).position.y) > 1){
-                if (position.y > side.get(index).position.y)position.y--; else position.y++;
-            }
 
+            PlayingField tmpV = new PlayingField(position.x, position.y);
+
+            if (Math.abs(position.y - side.get(index).position.y) > 1) {
+
+                if (position.y > side.get(index).position.y){
+                    tmpV.y--;
+                    if (chPlace(tmpV,side,band)) position.y--;
+                }
+                else {
+                    tmpV.y++;
+                    if (chPlace(tmpV,side,band)) position.y++;
+                }
+                return;
+
+            }
             if (Math.abs(position.x - side.get(index).position.x) > 1){
-                if (position.x > side.get(index).position.x)position.x--; else position.x++;
+                if (position.x > side.get(index).position.x){
+                    tmpV.x--;
+                    if (chPlace(tmpV,side,band)) position.x--;
+
+                }
+                else {
+                    tmpV.x++;
+                    if (chPlace(tmpV,side,band)) position.x++;
+                }
             }
-
-
-
         }
 
     }
+
+
 
 
 }

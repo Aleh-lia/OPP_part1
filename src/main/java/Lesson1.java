@@ -7,6 +7,7 @@ public class Lesson1 {
     private static final String bottom10 = formatDiv("g") + String.join("", Collections.nCopies(9, formatDiv("-h"))) + formatDiv("-i");
     private static final List<BaseHero> darkSide = new ArrayList<>();
     private static final List<BaseHero> whiteSide = new ArrayList<>();
+    private static final int MAX_BAND = 50;
 
     public static void main(String[] args) {
         int step = 1;
@@ -15,69 +16,87 @@ public class Lesson1 {
         System.out.print(AnsiColors.ANSI_BLACK + AnsiColors.ANSI_PURPLE_BACKGROUND + "Press Enter to begin." + AnsiColors.ANSI_RESET);
         in.nextLine();
 
+        System.out.print(AnsiColors.ANSI_RED + "First step" + AnsiColors.ANSI_RESET);
+        view();
+        in.nextLine();
 
+        boolean flag = true;
+        while (flag) {
+            System.out.print(AnsiColors.ANSI_RED + "Step:" + step++ + AnsiColors.ANSI_RESET);
 
-        while (true) {
-            if (step == 1 ){
-                System.out.print(AnsiColors.ANSI_RED + "First step" + AnsiColors.ANSI_RESET);
-            } else {
-                System.out.print(AnsiColors.ANSI_RED + "Step:" + step + AnsiColors.ANSI_RESET);
-            }
-            step++;
-
-            view();
 
             darkSide.forEach((s) -> s.step(whiteSide));
             whiteSide.forEach((s) -> s.step(darkSide));
+            view();
+
+            String tmp = isGameOver();
+            if (tmp.length() > 0) {
+                System.out.println(tmp);
+                flag = false;
+            }
+
 
             in.nextLine();
         }
     }
 
+    private static String isGameOver(){
+        int cnt = darkSide.size();
+        for (BaseHero hero: darkSide){
+            if (hero.getStatus().equals("Die")) cnt--;
+        }
+        if (cnt==0) return "Green side is WIN!";
+
+        cnt = whiteSide.size();
+        for (BaseHero hero: whiteSide){
+            if (hero.getStatus().equals("Die")) cnt--;
+        }
+        if (cnt==0) return "Blue side is WIN!";
+
+        return "";
+    }
+
     public static void init(){
         int x = 1;
         int y = 1;
-        darkSide.add(new Fermer(darkSide, x++, y));
-        darkSide.add(new Outlaw(darkSide, x++, y));
-        darkSide.add(new Sniper(darkSide, x++, y));
-        darkSide.add(new Druid(darkSide, x++, y));
+
         Random rnd = new Random();
-        for (int i = 0; i < 6; i++) {
+        int max = MAX_BAND;
+        for (int i = 0; i < 10; i++) {
+            int tmp = max > 0 ? new Random().nextInt(10) + 1 : 1;
             switch (rnd.nextInt(4)){
                 case 0:
-                    darkSide.add(new Fermer(darkSide, x++, y));
+                    darkSide.add(new Fermer(darkSide, x++, y, tmp));
                     break;
                 case 1:
-                    darkSide.add(new Outlaw(darkSide, x++, y));
+                    darkSide.add(new Druid(darkSide, x++, y, tmp));
                     break;
                 case 2:
-                    darkSide.add(new Sniper(darkSide, x++, y));
+                    darkSide.add(new Sniper(darkSide, x++, y, tmp));
                     break;
                 default:
-                    darkSide.add(new Druid(darkSide, x++, y));
+                    darkSide.add(new Outlaw(darkSide, x++, y, tmp));
             }
+            max -= tmp;
         }
 
         x = 1;
         y = 10;
-
-        whiteSide.add(new Fermer(whiteSide, x++, y));
-        whiteSide.add(new Monk(whiteSide, x++, y));
-        whiteSide.add(new Archer(whiteSide, x++, y));
-        whiteSide.add(new Pikeman(whiteSide, x++, y));
-        for (int i = 0; i < 6; i++) {
+        max = MAX_BAND;
+        for (int i = 0; i < 10; i++) {
+            int tmp = max > 0 ? new Random().nextInt(10) + 1 : 1;
             switch (rnd.nextInt(4)){
                 case 0:
-                    whiteSide.add(new Fermer(whiteSide, x++, y));
+                    whiteSide.add(new Fermer(whiteSide, x++, y, tmp));
                     break;
                 case 1:
-                    whiteSide.add(new Monk(whiteSide, x++, y));
+                    whiteSide.add(new Monk(whiteSide, x++, y, tmp));
                     break;
                 case 2:
-                    whiteSide.add(new Archer(whiteSide, x++, y));
+                    whiteSide.add(new Archer(whiteSide, x++, y, tmp));
                     break;
                 default:
-                    whiteSide.add(new Pikeman(whiteSide, x++, y));
+                    whiteSide.add(new Pikeman(whiteSide, x++, y, tmp));
             }
         }
 
@@ -100,17 +119,24 @@ public class Lesson1 {
     }
     private static String getChar(int x, int y){
                 String out = "| ";
+                boolean flag = false;
                 for (int cnt = 0; cnt < darkSide.size(); cnt++) {
                     if (darkSide.get(cnt).getPosition().x == x && darkSide.get(cnt).getPosition().y == y) {
-                out = "|" + ( (darkSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_BLUE) +
+                        flag = true;
+                        out = "|" + ( (darkSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_BLUE) +
                         darkSide.get(cnt).getName().charAt(0) + AnsiColors.ANSI_RESET);
             } else if (whiteSide.get(cnt).getPosition().x == x && whiteSide.get(cnt).getPosition().y == y) {
-                out = "|" + ( (whiteSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_GREEN) +
-                        whiteSide.get(cnt).getName().charAt(0) + AnsiColors.ANSI_RESET);
+                        if (!flag | !darkSide.get(cnt).getStatus().equals("Die")){
+                            out = "|" + ( (whiteSide.get(cnt).getStatus().equals("Die")?AnsiColors.ANSI_RED:AnsiColors.ANSI_GREEN) +
+                                    whiteSide.get(cnt).getName().charAt(0) + AnsiColors.ANSI_RESET);
+                        }
+
             }
         }
         return out;
     }
+
+
     private static void view() {
         darkSide.forEach((v) -> l[0] = Math.max(l[0], v.returnCondition().length()));
         for (int i = 0; i < l[0]*2.5; i++) System.out.print("_");

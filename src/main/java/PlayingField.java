@@ -6,4 +6,9 @@ public class  PlayingField {
         this.x = x;
         this.y = y;
     }
+
+    public boolean checkPlace(PlayingField place) {
+        if (place.x == x && place.y == y) return true;
+        return false;
+    }
 }
